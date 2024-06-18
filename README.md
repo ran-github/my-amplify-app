@@ -3,7 +3,6 @@
 1. Install AWS Amplify CLI on your desktop
 npm install -g @aws-amplify/cli
 
-
 2. Configure amplify for your app
 amplify configure
 launches AWS console
