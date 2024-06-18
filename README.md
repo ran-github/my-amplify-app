@@ -1,70 +1,142 @@
-# Getting Started with Create React App
+# Getting Started with AWS Amplify and React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Install AWS Amplify CLI on your desktop
+npm install -g @aws-amplify/cli
 
-## Available Scripts
 
-In the project directory, you can run:
+2. Configure amplify for your app
+amplify configure
+launches AWS console
+Prompts you to sign in (as administrator)
+```
+Select your region (e.g. us-east-1)
+```
+Navigate to user creation page in IAM (create the application user, e.g., my-amplify-dev)
+Attach policy directly to user
+Select "AdministratorAccess-Amplify"
+Select Create User
+Capture Access key and Secret Access key for IAM user
+Use Command Line when creating new Access Key
+```
+Enter the access key for newly created user:
+? accessKeyId: [hidden]
+? secretAccessKey: [hidden]
 
-### `npm start`
+This would update/create the AWS profile in your local machine
+? Profile Name: my-amplify-local
+```
+3. Create sample React App
+npx create-react-app my-amplify-app
+cd my-amplify-app
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. Initialize your React app with amplify
+```
+amplify init
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+? Enter a name for the project: myamplifyapp
+```
+Select the defaults after verifying they are correct
 
-### `npm test`
+```
+? Select the authentication method you want to use: (use arrow keys)
+> AWS profile
+  AWS access keys
+```
+Select the profile (my-amplify-local)
+Select defaults to continue
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+5. Integrate Amplify with Cognito for user management
+```
+amplify add auth
 
-### `npm run build`
+```
+Select default configuration (for Cognito)
+```
+Do you want to use the default authentication and security configuration? Default configuration
+```
+```
+How do you want to be able to sign in? (Use arrow keys)
+  Username
+> Email
+  Phone Number
+  Email or Phone Number
+  I want to learn more.
+```
+Select Email
+Select No to configure advanced settings
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Note:
+The configurations so far are stored locally, then need to be pushed to Amplify.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
 
-### `npm run eject`
+6. Push the code to Amplify, select the defaults
+```
+amplify push
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+7. Install the Amplify libraries that will give the login UI and functionality
+```
+npm install aws-amplify @aws-amplify/ui-react
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+8. Update your code (e.g. App.js) to include amplify libraries
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+9. Run the application (runs locally on your dev laptop)
+```
+npm start
+```
+10. Create an account using a valid email address
+Capture the code sent to the email address to verify
+Log in with newly created account
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+11. Upload code to GitHub
+Create new Repo in GitHub, call it (e.g.) my-amplify-app
+Capture the url for the origin (e.g. https://github.com/ran-github/my-amplify-app.git)
 
-## Learn More
+Initialize local Git repo, point to remote origin, push to GitHub
+```
+git init
+git add .
+git commit -m "Initial version"
+git branch -M main
+git remote add origin https://github.com/ran-github/my-amplify-app.git
+git push -u origin main
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+12. Configure CI/CD within Amplify (i.e. configure repo for source code)
+Within AWS Console browse over to "Backend environments" for your app (myamplifyapp)
+Select GitHub
+Authorize Cognito to access GitHub
+Select the specific project you want to integrate with Amplify
+Set branch to main
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Set the following as shown:
+Select a Backend envoronment to use with this branch: myamplifyapp
+Environment: Dev
+Enable full-stack continuous deployment (CI/CD): checked
 
-### Code Splitting
+Select an existing service role or create a new one so Amplify Hosting may access your resources
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+13. Create a new one:
+- Trusted entity type: AWS Service
+- Use case Amplify
+- Amplify - Backend Deployment
 
-### Analyzing the Bundle Size
+-> Next
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Permission policies: AdministratorAccess-Amplify
 
-### Making a Progressive Web App
+-> Next
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Role name: amplifyCICDRole
 
-### Advanced Configuration
+Accept defaults and create role
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+14. Go back to step 12, select an existing role, choose amplifyCICDRole
 
-### Deployment
+-> Next
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Save and deploy
